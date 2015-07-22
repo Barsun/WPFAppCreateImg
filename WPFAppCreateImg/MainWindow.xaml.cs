@@ -27,7 +27,7 @@ namespace WPFAppCreateImg
         }
 
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e){
-            throw new NotImplementedException();
+            
         }
 
         private void button_Click_BrowseImages(object sender, RoutedEventArgs e){
