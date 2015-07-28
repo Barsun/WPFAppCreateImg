@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<next_lottery_data>
+   <draw id="uk">
+      <name>UK National Lottery</name>
+   </draw>
+   <draw id="es">
+      <name>Spanish Lottery</name>
+   </draw>
+   <draw id="eu">
+      <name>EuroMillions</name>
+   </draw>
+   <draw id="eusw">
+      <name>EuroMillions Swedish</name>
+   </draw>
+   <draw id="euus">
+      <name>EuroMillions Dollars</name>
+   </draw>
+   <draw id="eueu">
+      <name>EuroMillions Dollars(no sign $)</name>
+   </draw>
+   <draw id="eupl">
+      <name>EuroMillions Polish</name>
+   </draw>
+   <draw id="it">
+      <name>SuperEnaLotto</name>
+   </draw>
+   <draw id="ir">
+      <name>Irish Lotto</name>
+   </draw>
+   <draw id="mm">
+      <name>MegaMillions Lotto</name>
+   </draw>
+   <draw id="mmuk">
+      <name>MegaMillions Lotto Pound</name>
+   </draw>
+   <draw id="mmeu">
+      <name>MegaMillions Lotto Euro</name>
+   </draw>
+   <draw id="mmpl">
+      <name>MegaMillions Lotto Polish</name>
+   </draw>
+   <draw id="pb">
+      <name>PowerBall Lotto</name>
+   </draw>
+   <draw id="pbuk">
+      <name>PowerBall Lotto Pound</name>
+   </draw>
+   <draw id="pbeu">
+      <name>PowerBall Lotto Euro</name>
+   </draw>
+   <draw id="pbpl">
+      <name>PowerBall Lotto Polish</name>
+   </draw>
+   <draw id="ej">
+      <name>EuroJackpot</name>
+   </draw>
+   <draw id="ejuk">
+      <name>EuroJackpot Pound</name>
+   </draw>
+   <draw id="ejus">
+      <name>EuroJackpot Dollar</name>
+   </draw>
+   <draw id="ejpl">
+      <name>EuroJackpot Polish</name>
+   </draw>
+   <draw id="de">
+      <name>6aus49</name>
+   </draw>
+   <draw id="deuk">
+      <name>6aus49 Pound</name>
+   </draw>
+   <draw id="deus">
+      <name>6aus49 Dollars</name>
+   </draw>
+   <draw id="depl">
+      <name>6aus49 Polish</name>
+   </draw>
+   <draw id="pl">
+      <name>Polish Lottery</name>
+   </draw>
+   <draw id="pluk">
+      <name>Polish Lottery Pound</name>
+   </draw>
+   <draw id="pleu">
+      <name>Polish Lottery Euro</name>
+   </draw>
+   <draw id="plus">
+      <name>Polish Lottery Dolars</name>
+   </draw>
+   <draw id="p2">
+      <name>Polish Bonus Lottery</name>
+   </draw>
+   <draw id="p2uk">
+      <name>Polish Bonus Lottery Pound</name>
+   </draw>
+   <draw id="p2eu">
+      <name>Polish Bonus Lottery Euro</name>
+   </draw>
+   <draw id="p2us">
+      <name>Polish Bonus Lottery Dollars</name>
+   </draw>
+</next_lottery_data>

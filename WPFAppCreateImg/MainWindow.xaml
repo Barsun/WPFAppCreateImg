@@ -1,7 +1,11 @@
 ﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" x:Class="WPFAppCreateImg.MainWindow"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:wpfAppCreateImg="clr-namespace:WPFAppCreateImg"
+    xmlns:customcontrols="clr-namespace:WPFAppCreateImg"
+    mc:Ignorable="d" x:Class="WPFAppCreateImg.MainWindow"
+    xmlns:local="clr-namespace:WPFAppCreateImg"
         Title="Create Dynamic Images" Height="475" Width="900" ResizeMode="NoResize">
     <Grid Height="444" VerticalAlignment="Top">
         <Grid.RowDefinitions>
@@ -18,10 +22,9 @@
             Grid.Row="0"
             HorizontalContentAlignment="Stretch"
 		    SelectionChanged="TabControl_SelectionChanged">
-            <TabItem Header="JackPot">
+            <TabItem Header="JackPot" x:Name="JackPot">
                 <Grid Background="#FFE5E5E5">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="35"/>
                         <RowDefinition Height="35"/>
                         <RowDefinition Height="35"/>
                         <RowDefinition Height="35"/>
@@ -39,47 +42,29 @@
 			       VerticalAlignment="Top"
 			       Width="0" Height="16" Grid.Column="1"/>
                     <Label Grid.Row="0" Grid.Column="1" Content="Name:" Margin="2,5,5,5"/>
-                    <TextBox Name="NameTextBox" Margin="10,10,10,6" Grid.Row="0" Grid.Column="2"/>
+                    <TextBox Name="NameTextBox" Margin="10,5,10,6" Grid.Row="0" Grid.Column="2"/>
 
                     <Label Grid.Row="1" Grid.Column="1" Content="JackPot Game:" Margin="2,0,0,0"/>
                     <ComboBox
+                        x:Name="GameComboBox"
+                        ItemsSource="{Binding ListOfItems}"
+                        SelectedIndex="0"
 	                    HorizontalAlignment="Left"
-	                    Margin="10,4,0,0"
-	                    VerticalAlignment="Top"
+	                    Margin="10,0,0,6"
+	                    VerticalAlignment="Bottom"
 	                    Width="243"
                         Grid.Row="1" Grid.Column="2" 
-                        SelectedValuePath="Tag" Height="22">
-                        <ComboBox.Items>
-                            <ComboBoxItem IsSelected="True" Content="UK National Lottery" Tag="uk"/>
-                            <ComboBoxItem Content="Spanish Lottery" Tag="es"/>
-                            <ComboBoxItem Content="EuroMillions" Tag="eu"/>
-                            <ComboBoxItem Content="SuperEnaLotto" Tag="it"/>
-                            <ComboBoxItem Content="Irish Lotto" Tag="ir"/>
-                            <ComboBoxItem Content="MegaMillions Lotto" Tag="mm"/>
-                            <ComboBoxItem Content="PowerBall Lotto" Tag="pb"/>
-                            <ComboBoxItem Content="EuroJackpot" Tag="ej"/>
-                            <ComboBoxItem Content="6aus49" Tag="de"/>
-                            <ComboBoxItem Content="Polish Lottery" Tag="pl"/>
-                            <ComboBoxItem Content="Polish Bonus Lottery" Tag="p2"/>
-                        </ComboBox.Items>
+                        SelectedValuePath="Tag" Height="25">
                     </ComboBox>
-                    <Label Grid.Row="1" Grid.Column="3" Content="Just amount:" Margin="5,0,0,0"/>
-                    <CheckBox Grid.Row="1" Grid.Column="4" Name="AmountCheckBox" Margin="5,7,0,0"></CheckBox>
+                    <Label Grid.Row="1" Grid.Column="3" Content="Just amount:" Margin="5,4,0,0"/>
+                    <CheckBox Grid.Row="1" Grid.Column="4" Name="AmountCheckBox" Margin="5,13,0,0"></CheckBox>
 
-                    <Label Grid.Row="2" Grid.Column="1" Content="Currency: " Margin="2,0,0,0"/>
-                    <ComboBox
-	                    HorizontalAlignment="Left"
-	                    Margin="10,4,0,0"
-	                    VerticalAlignment="Top"
-	                    Width="243"
-                        Grid.Row="2" Grid.Column="2" Height="22"/>
-
-                    <Label Grid.Row="3" Grid.Column="1" Content="Your text: " Margin="0,3,0,0"/>
-                    <TextBox Name="PlusTextBox" Margin="10,10,10,6" Grid.Row="3" Grid.Column="2"/>
+                    <Label Grid.Row="2" Grid.Column="1" Content="Your text: " Margin="0,3,0,0"/>
+                    <TextBox Name="PlusTextBox" Margin="10,5" Grid.Row="2" Grid.Column="2"/>
 
                 </Grid>
             </TabItem>
-            <TabItem Header="Drow Date">
+            <TabItem Header="Drow Date" x:Name="DrowDate">
 
 
                 <Grid Background="#FFE5E5E5">
@@ -99,23 +84,35 @@
 			    Width="0" Height="16"/>
 
                     <Label Grid.Row="0" Grid.Column="0" Content="Name:" Margin="5"/>
-                    <TextBox Name="NameDrawDateTextBox" Margin="10,10,453,6" Grid.Row="0" Grid.Column="1"/>
+                    <TextBox Name="NameDrawDateTextBox" Margin="10,5,453,5" Grid.Row="0" Grid.Column="1"/>
 
                     <Label Grid.Row="1" Grid.Column="0" Content="JackPot Game Date: " Margin="5,0,0,0"/>
                     <ComboBox
-	                HorizontalAlignment="Left"
-	                Margin="10,4,0,0"
-	                VerticalAlignment="Top"
-	                Width="248"
-                    Grid.Row="1" Grid.Column="1"/>
+                        x:Name="GameDateComboBox"
+                        ItemsSource="{Binding ListOfItems}"
+                        SelectedIndex="0"
+	                    HorizontalAlignment="Left"
+	                    Margin="10,4,0,0"
+	                    VerticalAlignment="Top"
+	                    Width="248"
+                        Height="25"
+                        Grid.Row="1" Grid.Column="1"/>
 
                     <Label Grid.Row="2" Grid.Column="0" Content="Language: " Margin="5,0,0,0"/>
                     <ComboBox
-	                HorizontalAlignment="Left"
-	                Margin="10,4,0,0"
-	                VerticalAlignment="Top"
-	                Width="248"
-                    Grid.Row="2" Grid.Column="1"/>
+                        Name="LanguageComboBox"
+	                    HorizontalAlignment="Left"
+	                    Margin="10,4,0,0"
+	                    VerticalAlignment="Top"
+	                    Width="248"
+                        Height="25"
+                        Grid.Row="2" Grid.Column="1">
+                        <ComboBox.Items>
+                            <ComboBoxItem IsSelected="True" Content="English" Tag="en" />
+                            <ComboBoxItem Content="Polish" Tag="pl" />
+                            <ComboBoxItem Content="Russian" Tag="ru"/>
+                        </ComboBox.Items>
+                    </ComboBox>
                 </Grid>
 
 
@@ -139,46 +136,45 @@
 
             <Label Grid.Row="0" Grid.Column="0" Content="Font Family:" Margin="5,5,5,0"/>
             <ComboBox
+                        x:Name="FontFamilyComboBox"
+                        ItemsSource="{Binding Source={x:Static Fonts.SystemFontFamilies}}"
+                        SelectedIndex="0"
 	                    HorizontalAlignment="Left"
 	                    Margin="10,4,0,0"
 	                    VerticalAlignment="Top"
 	                    Width="203"
-                        Grid.Row="0" Grid.Column="1" Height="22"/>
+                        Grid.Row="0" Grid.Column="1" Height="27"/>
 
             <Label Grid.Row="1" Grid.Column="0" Content="Font Style:" Margin="5,5,5,0"/>
             <ComboBox
-	                    HorizontalAlignment="Left"
-	                    Margin="10,4,0,0"
-	                    VerticalAlignment="Top"
-	                    Width="203"
-                        Grid.Row="1" Grid.Column="1" Height="22"/>
+                Name="FontStyleBox"
+	            HorizontalAlignment="Left"
+	            Margin="10,4,0,0"
+	            VerticalAlignment="Top"
+	            Width="203"
+                Grid.Row="1" Grid.Column="1" Height="26">
+                <ComboBox.Items>
+                    <ComboBoxItem IsSelected="True" Content="Regular" />
+                    <ComboBoxItem Content="Bold" />
+                    <ComboBoxItem Content="Italic" />
+                </ComboBox.Items>
+            </ComboBox>
 
             <Label Grid.Row="2" Grid.Column="0" Content="Shadow Color Font:" Margin="5"/>
-            <ComboBox
-	                    HorizontalAlignment="Left"
-	                    Margin="10,4,0,0"
-	                    VerticalAlignment="Top"
-	                    Width="203"
-                        Grid.Row="2" Grid.Column="1" Height="22"/>
+
+            <local:Colorpicker  x:Name="shadowFontColor" Grid.Row="2" Grid.Column="1" Margin="10,5,52,5"></local:Colorpicker>
 
             <Label Grid.Row="0" Grid.Column="2" Content="Font Size:" Margin="5"/>
-            <ComboBox
-	                    HorizontalAlignment="Left"
-	                    Margin="10,4,0,0"
-	                    VerticalAlignment="Top"
-	                    Width="203"
-                        Grid.Row="0" Grid.Column="3" Height="22"/>
+
+            <TextBox Name="TextSizeTextBox" Margin="10,5,305,6"  Grid.Row="0" Grid.Column="3" PreviewTextInput="NumberValidationTextBox"/>
 
             <Label Grid.Row="1" Grid.Column="2" Content="Font Color:" Margin="5"/>
-            <ComboBox
-	                    HorizontalAlignment="Left"
-	                    Margin="10,4,0,0"
-	                    VerticalAlignment="Top"
-	                    Width="203"
-                        Grid.Row="1" Grid.Column="3" Height="22"/>
+
+            <local:Colorpicker  x:Name="fontColorTextBox" Grid.Row="1" Grid.Column="3" Margin="10,5,192,5"></local:Colorpicker>
 
             <Label Grid.Row="2" Grid.Column="2" Content="Image:" Margin="5"/>
             <TextBox Name="FileNameTextBox" Margin="10,5,112,6" Grid.Row="2" Grid.Column="3"/>
+
             <Button Content="Browse" Height="25" HorizontalAlignment="Left" Margin="290,4,0,0"
                 Name="ButtonImageBrowse" VerticalAlignment="Top" Width="88" Click="button_Click_BrowseImages" Grid.Row="2" Grid.Column="3"/>
 
@@ -187,13 +183,13 @@
             <TextBox Name="WidthTextBox" Margin="10,5,138,6" Grid.Row="3" Grid.Column="1" PreviewTextInput="NumberValidationTextBox"/>
 
             <Label Grid.Row="3" Grid.Column="2" Content="Height:" Margin="5,5,5,0"/>
-            <TextBox Name="HeightTextBox" Margin="10,5,211,6" Grid.Row="3" Grid.Column="3" PreviewTextInput="NumberValidationTextBox"/>
+            <TextBox Name="HeightTextBox" Margin="10,5,305,6" Grid.Row="3" Grid.Column="3" PreviewTextInput="NumberValidationTextBox"/>
 
             <Label Grid.Row="4" Grid.Column="0" Content="Margin Top:" Margin="5,5,5,0"/>
             <TextBox Name="MarginRightTextBox" Margin="10,5,138,6" Grid.Row="4" Grid.Column="1" PreviewTextInput="NumberValidationTextBox"/>
 
             <Label Grid.Row="4" Grid.Column="2" Content="Margin Left:" Margin="5,5,5,0"/>
-            <TextBox Name="MarginLeftTextBox" Margin="10,5,211,6" Grid.Row="4" Grid.Column="3" PreviewTextInput="NumberValidationTextBox"/>
+            <TextBox Name="MarginLeftTextBox" Margin="10,5,305,6" Grid.Row="4" Grid.Column="3" PreviewTextInput="NumberValidationTextBox"/>
 
         </Grid>
 
@@ -204,12 +200,12 @@
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
 
-            <TextBox Name="LinkTextBox" Margin="10,5,138,6" Grid.Row="0" Grid.Column="0" IsEnabled="False" />
+            <TextBox Name="LinkTextBox" Margin="10,5,138,1" Grid.Row="0" Grid.Column="0" IsEnabled="False" />
 
-            <Button Content="Create" Height="25" HorizontalAlignment="Left" Margin="10,0,0,0"
-                Name="ButtonCreate" VerticalAlignment="Top" Width="88" Click="button_Click_BrowseImages" Grid.Row="0" Grid.Column="2"/>
+            <Button Content="Create" Height="29" HorizontalAlignment="Left" Margin="77,5,0,0"
+                Name="ButtonCreate" VerticalAlignment="Top" Width="88" Click="button_Click_SendObject" Grid.Row="0" Grid.Column="2"/>
 
-            <Button Content="Preview" Height="25" HorizontalAlignment="Left" Margin="125,1,0,0"
+            <Button Content="Preview" Height="29" HorizontalAlignment="Left" Margin="190,5,0,0"
                 Name="ButtonPreview" VerticalAlignment="Top" Width="88" Click="button_Click_BrowseImages" Grid.Row="0" Grid.Column="2"/>
 
         </Grid>
