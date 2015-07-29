@@ -44,8 +44,8 @@ namespace PhotoService
             }
         }
 
-        [WebInvoke(UriTemplate = "UploadPhoto/{fileName}/{description}", Method = "POST")]
-        public void UploadPhoto(string fileName, string description, Stream fileContents)
+        [WebInvoke(UriTemplate = "UploadPhoto/{fileName}", Method = "POST")]
+        public void UploadPhoto(string fileName, Stream fileContents)
         {
             byte[] buffer = new byte[32768];
             MemoryStream ms = new MemoryStream();
@@ -63,11 +63,11 @@ namespace PhotoService
             returnImage.Save(@"C:\Users\Public\TestFolder\" + fileName + ".jpg");
 
             // Save the photo on database.
-            using (DataAcess data = new DataAcess())
-            {
-                var photo = new Photo() { Name = fileName, Description = description, Data = ms.ToArray(), DateTime = DateTime.UtcNow };
-                data.InsertPhoto(photo);
-            }
+            //using (DataAcess data = new DataAcess())
+            //{
+            //    var photo = new Photo() { Name = fileName, Description = fileName, Data = ms.ToArray(), DateTime = DateTime.UtcNow };
+            //    data.InsertPhoto(photo);
+            //}
 
             ms.Close();
             Console.WriteLine("Uploaded file {0} with {1} bytes", fileName, totalBytesRead);
@@ -118,6 +118,20 @@ namespace PhotoService
             {
                 data.DeletePhoto(int.Parse(id));
             }
+        }
+
+
+
+        [WebInvoke(UriTemplate = "CreateFiles/{details}", Method = "GET")]
+        public void CreateFiles(string details)
+        {
+            string text = "A class is the most powerful data type in C#. Like a structure, " +
+                           "a class defines the data and behavior of the data type. " + details;
+
+            File.WriteAllText(@"C:\Users\Public\TestFolder\WriteText.txt", text);
+
+            Console.WriteLine("Create file {0}", details);
+
         }
     }
 }

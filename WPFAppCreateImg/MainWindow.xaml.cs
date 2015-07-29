@@ -74,8 +74,6 @@ namespace WPFAppCreateImg
                 dictionary["game"] = GameComboBox.Text;
                 dictionary["textplus"] = PlusTextBox.Text;
             }
-
-
             
             dictionary["amount"] = AmountCheckBox.IsChecked.ToString();
             dictionary["fontFamily"] = FontFamilyComboBox.Text;
@@ -94,30 +92,51 @@ namespace WPFAppCreateImg
 
             //result.CreateFiles(dictionary);
 
+            SendParametersToServerDynImg(dictionary);
 
-            // Create the REST request.
+            UploadImageOnServer(FileNameTextBox.Text);
+        }
+
+        private void UploadImageOnServer(string path){
+
             string url = ConfigurationManager.AppSettings["serviceUrl"];
-            string requestUrl = string.Format("{0}/UploadPhoto/{1}/{2}", url, System.IO.Path.GetFileName(FileNameTextBox.Text), "ssdfvbsdfv");
 
-            HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(requestUrl);
+            string requestUrl = string.Format("{0}/UploadPhoto/{1}", url, System.IO.Path.GetFileName(path));
+            HttpWebRequest request = (HttpWebRequest) HttpWebRequest.Create(requestUrl);
+
             request.Method = "POST";
             request.ContentType = "text/plain";
 
-            byte[] fileToSend = File.ReadAllBytes(FileNameTextBox.Text);
+
+            byte[] fileToSend = File.ReadAllBytes(path);
             request.ContentLength = fileToSend.Length;
 
-            using (Stream requestStream = request.GetRequestStream())
-            {
+            using (Stream requestStream = request.GetRequestStream()){
                 // Send the file as body request.
                 requestStream.Write(fileToSend, 0, fileToSend.Length);
                 requestStream.Close();
             }
 
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-                Console.WriteLine("HTTP/{0} {1} {2}", response.ProtocolVersion, (int)response.StatusCode, response.StatusDescription);
+            using (HttpWebResponse response = (HttpWebResponse) request.GetResponse())
+                Console.WriteLine("HTTP/{0} {1} {2}", response.ProtocolVersion, (int) response.StatusCode,
+                    response.StatusDescription);
 
             MessageBox.Show("File sucessfully uploaded.", "Upload", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
 
+        private void SendParametersToServerDynImg(Dictionary<string, string> dictionary){
+
+            string url = ConfigurationManager.AppSettings["serviceUrl"];
+
+            // Create the REST request.
+            string requestUrl1 = string.Format("{0}/CreateFiles/{1}", url, "dsfsdf");
+
+            WebRequest request1 = WebRequest.Create(requestUrl1);
+            request1.Method = "GET";
+
+            // Get response  
+            using (HttpWebResponse response = (HttpWebResponse)request1.GetResponse())
+                Console.WriteLine("HTTP/{0} {1} {2}", response.ProtocolVersion, (int)response.StatusCode, response.StatusDescription);
         }
     }
 }
