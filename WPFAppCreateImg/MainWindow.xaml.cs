@@ -1,23 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Xml;
-using System.Xml.Serialization;
 
 namespace WPFAppCreateImg
 {
@@ -26,15 +16,16 @@ namespace WPFAppCreateImg
     /// </summary>
     public partial class MainWindow : Window
     {
+        readonly DataObject _filesStructureDataObject = new DataObject();
+
         public MainWindow(){
             InitializeComponent();
-            DataContext = new DataObject();
+            DataContext = _filesStructureDataObject;
+
+            webBrowser.Navigate("http://dynamic.bflimg.com/Dimg/eurodd12.aspx");
         }
 
-        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e){
-            
-        }
-
+       
         private void button_Click_BrowseImages(object sender, RoutedEventArgs e){
             Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
 
@@ -62,81 +53,102 @@ namespace WPFAppCreateImg
 
         private void button_Click_SendObject(object sender, RoutedEventArgs e){
 
-            var dictionary = new Dictionary<string, string>();
-
-            if (JackPot.IsSelected){
-                dictionary["nameName"] = NameTextBox.Text;
-                dictionary["game"] = GameComboBox.Text;
-                dictionary["textplus"] = PlusTextBox.Text;
+            if (!File.Exists(FileNameTextBox.Text))
+            {
+                string message = string.Format("Unable to find '{0}'. Please check the file name and try again.", FileNameTextBox.Text);
+                MessageBox.Show(message, "Upload", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                FileNameTextBox.Focus();
+                return;
             }
-            if (DrowDate.IsSelected){
-                dictionary["nameName"] = NameTextBox.Text;
-                dictionary["game"] = GameComboBox.Text;
-                dictionary["textplus"] = PlusTextBox.Text;
+
+            if (JackPot.IsSelected)
+            {
+                if (string.IsNullOrWhiteSpace(NameTextBox.Text))
+                {
+                    MessageBox.Show("Specifiy a name for file.", "Create", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    NameTextBox.Focus();
+                } else {
+                    SendParametersToServerDynImg();
+                    UploadImageOnServer();
+                }
+            } else if (DrowDate.IsSelected)
+            {
+                if (string.IsNullOrWhiteSpace(NameDrawDateTextBox.Text) && DrowDate.IsSelected)
+                {
+                    MessageBox.Show("Specify the description of the file to upload.", "Drow Date", MessageBoxButton.OK,
+                        MessageBoxImage.Exclamation);
+                    NameDrawDateTextBox.Focus();
+                } else {
+                    SendParametersToServerDynImg();
+                    UploadImageOnServer();
+                }
             }
             
-            dictionary["amount"] = AmountCheckBox.IsChecked.ToString();
-            dictionary["fontFamily"] = FontFamilyComboBox.Text;
-            dictionary["textSize"] = TextSizeTextBox.Text;
-            dictionary["FontStyle"] = FontStyleBox.Text;
-            dictionary["shadowColor"] = shadowFontColor.SelectedColor.ToString();
-            dictionary["WidthText"] = WidthTextBox.Text;
-            dictionary["MarginRight"] = MarginRightTextBox.Text;
-            dictionary["fontColor"] = fontColorTextBox.SelectedColor.ToString();
-            dictionary["FileName"] = FileNameTextBox.Text;
-            dictionary["Height"] = HeightTextBox.Text;
-            dictionary["MarginLeft"] = MarginLeftTextBox.Text;
-
-            //var result = new CreateImageAPI.FileCreateApiClient();
-
-
-            //result.CreateFiles(dictionary);
-
-            SendParametersToServerDynImg(dictionary);
-
-            UploadImageOnServer(FileNameTextBox.Text);
         }
 
-        private void UploadImageOnServer(string path){
+        private void UploadImageOnServer(){
 
             string url = ConfigurationManager.AppSettings["serviceUrl"];
+            try{
+                string requestUrl = string.Format("{0}/UploadPhoto/{1}", url,
+                    System.IO.Path.GetFileName(FileNameTextBox.Text));
+                HttpWebRequest request = (HttpWebRequest) HttpWebRequest.Create(requestUrl);
 
-            string requestUrl = string.Format("{0}/UploadPhoto/{1}", url, System.IO.Path.GetFileName(path));
-            HttpWebRequest request = (HttpWebRequest) HttpWebRequest.Create(requestUrl);
-
-            request.Method = "POST";
-            request.ContentType = "text/plain";
+                request.Method = "POST";
+                request.ContentType = "text/plain";
 
 
-            byte[] fileToSend = File.ReadAllBytes(path);
-            request.ContentLength = fileToSend.Length;
+                byte[] fileToSend = File.ReadAllBytes(FileNameTextBox.Text);
+                request.ContentLength = fileToSend.Length;
 
-            using (Stream requestStream = request.GetRequestStream()){
-                // Send the file as body request.
-                requestStream.Write(fileToSend, 0, fileToSend.Length);
-                requestStream.Close();
+                using (Stream requestStream = request.GetRequestStream()){
+                    requestStream.Write(fileToSend, 0, fileToSend.Length);
+                    requestStream.Close();
+                }
+
+                using (HttpWebResponse response = (HttpWebResponse) request.GetResponse())
+                    Console.WriteLine("HTTP/{0} {1} {2}", response.ProtocolVersion, (int) response.StatusCode, response.StatusDescription);
+
+                MessageBox.Show("File sucessfully uploaded.", "Upload", MessageBoxButton.OK, MessageBoxImage.Information);
+            } catch (Exception ex){
+                MessageBox.Show("Error during file upload: " + ex.Message, "Upload", MessageBoxButton.OK,
+                    MessageBoxImage.Error);
             }
-
-            using (HttpWebResponse response = (HttpWebResponse) request.GetResponse())
-                Console.WriteLine("HTTP/{0} {1} {2}", response.ProtocolVersion, (int) response.StatusCode,
-                    response.StatusDescription);
-
-            MessageBox.Show("File sucessfully uploaded.", "Upload", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
-        private void SendParametersToServerDynImg(Dictionary<string, string> dictionary){
+        private void SendParametersToServerDynImg(){
+
+            var codeLotteryDataDraw = _filesStructureDataObject.ListOfItemsData.FirstOrDefault(x => x.name==GameComboBox.Text);
 
             string url = ConfigurationManager.AppSettings["serviceUrl"];
+            try{
+                // Create the REST request.
+                string requestUrl =
+                    string.Format("{0}/CreateFiles/{1}/{2}/{3}/{4}/{5}//{6}/{7}/{8}/{9}/{10}/{11}/{12}/{13}/{14}", url,
+                        NameTextBox.Text, codeLotteryDataDraw.id, PlusTextBox.Text, AmountCheckBox.IsChecked,
+                        FontFamilyComboBox.Text, TextSizeTextBox.Text, FontStyleBox.Text,
+                        shadowFontColor.SelectedColor.ToString().Remove(0, 1), WidthTextBox.Text,
+                        MarginRightTextBox.Text, fontColorTextBox.SelectedColor.ToString().Remove(0, 1),
+                        HeightTextBox.Text, MarginLeftTextBox.Text, JackPot.IsSelected);
 
-            // Create the REST request.
-            string requestUrl1 = string.Format("{0}/CreateFiles/{1}", url, "dsfsdf");
+                WebRequest request = WebRequest.Create(requestUrl);
+                request.Method = "GET";
 
-            WebRequest request1 = WebRequest.Create(requestUrl1);
-            request1.Method = "GET";
-
-            // Get response  
-            using (HttpWebResponse response = (HttpWebResponse)request1.GetResponse())
-                Console.WriteLine("HTTP/{0} {1} {2}", response.ProtocolVersion, (int)response.StatusCode, response.StatusDescription);
+                // Get response  
+                using (HttpWebResponse response = (HttpWebResponse) request.GetResponse())
+                    Console.WriteLine("HTTP/{0} {1} {2}", response.ProtocolVersion, (int) response.StatusCode,
+                        response.StatusDescription);
+            } catch (Exception ex){
+                MessageBox.Show("Error during creating file: " + ex.Message, "Create", MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
         }
+
+        void wb_LoadCompleted(object sender, NavigationEventArgs e)
+            {
+                string script = "document.body.style.overflow ='hidden'";
+                WebBrowser wb = (WebBrowser)sender;
+                wb.InvokeScript("execScript", new Object[] { script, "JavaScript" });
+            }
     }
 }

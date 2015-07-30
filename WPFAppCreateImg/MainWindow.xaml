@@ -6,7 +6,8 @@
     xmlns:customcontrols="clr-namespace:WPFAppCreateImg"
     mc:Ignorable="d" x:Class="WPFAppCreateImg.MainWindow"
     xmlns:local="clr-namespace:WPFAppCreateImg"
-        Title="Create Dynamic Images" Height="475" Width="900" ResizeMode="NoResize">
+    Icon="icon.png"
+        Title="Create Dynamic Images" Height="564" Width="900" ResizeMode="NoResize">
     <Grid Height="444" VerticalAlignment="Top">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -20,8 +21,7 @@
 		    VerticalAlignment="Top"
 		    Width="870"
             Grid.Row="0"
-            HorizontalContentAlignment="Stretch"
-		    SelectionChanged="TabControl_SelectionChanged">
+            HorizontalContentAlignment="Stretch">
             <TabItem Header="JackPot" x:Name="JackPot">
                 <Grid Background="#FFE5E5E5">
                     <Grid.RowDefinitions>
@@ -162,28 +162,28 @@
 
             <Label Grid.Row="2" Grid.Column="0" Content="Shadow Color Font:" Margin="5"/>
 
-            <local:Colorpicker  x:Name="shadowFontColor" Grid.Row="2" Grid.Column="1" Margin="10,5,52,5"></local:Colorpicker>
+            <local:Colorpicker  x:Name="shadowFontColor" Grid.Row="2" Grid.Column="1" Margin="10,5,47,5"></local:Colorpicker>
 
             <Label Grid.Row="0" Grid.Column="2" Content="Font Size:" Margin="5"/>
 
-            <TextBox Name="TextSizeTextBox" Margin="10,5,305,6"  Grid.Row="0" Grid.Column="3" PreviewTextInput="NumberValidationTextBox"/>
+            <TextBox Name="TextSizeTextBox" Margin="10,5,305,6"  Grid.Row="0" Grid.Column="3" PreviewTextInput="NumberValidationTextBox" Text="56"/>
 
             <Label Grid.Row="1" Grid.Column="2" Content="Font Color:" Margin="5"/>
 
             <local:Colorpicker  x:Name="fontColorTextBox" Grid.Row="1" Grid.Column="3" Margin="10,5,192,5"></local:Colorpicker>
 
             <Label Grid.Row="2" Grid.Column="2" Content="Image:" Margin="5"/>
-            <TextBox Name="FileNameTextBox" Margin="10,5,112,6" Grid.Row="2" Grid.Column="3"/>
+            <TextBox Name="FileNameTextBox" Margin="10,5,112,6" Grid.Row="2" Grid.Column="3" MouseDoubleClick="button_Click_BrowseImages" />
 
             <Button Content="Browse" Height="25" HorizontalAlignment="Left" Margin="290,4,0,0"
                 Name="ButtonImageBrowse" VerticalAlignment="Top" Width="88" Click="button_Click_BrowseImages" Grid.Row="2" Grid.Column="3"/>
 
 
             <Label Grid.Row="3" Grid.Column="0" Content="Width:" Margin="5,5,5,0"/>
-            <TextBox Name="WidthTextBox" Margin="10,5,138,6" Grid.Row="3" Grid.Column="1" PreviewTextInput="NumberValidationTextBox"/>
+            <TextBox Name="WidthTextBox" Margin="10,5,138,6" Grid.Row="3" Grid.Column="1" PreviewTextInput="NumberValidationTextBox" Text="600"/>
 
             <Label Grid.Row="3" Grid.Column="2" Content="Height:" Margin="5,5,5,0"/>
-            <TextBox Name="HeightTextBox" Margin="10,5,305,6" Grid.Row="3" Grid.Column="3" PreviewTextInput="NumberValidationTextBox"/>
+            <TextBox Name="HeightTextBox" Margin="10,5,305,6" Grid.Row="3" Grid.Column="3" PreviewTextInput="NumberValidationTextBox" Text="168"/>
 
             <Label Grid.Row="4" Grid.Column="0" Content="Margin Top:" Margin="5,5,5,0"/>
             <TextBox Name="MarginRightTextBox" Margin="10,5,138,6" Grid.Row="4" Grid.Column="1" PreviewTextInput="NumberValidationTextBox"/>
@@ -199,10 +199,13 @@
                 <ColumnDefinition Width="0*" />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
+            <WebBrowser Name="webBrowser" Margin="10,-12,225,-126" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" ScrollViewer.CanContentScroll="False"
+                ScrollViewer.HorizontalScrollBarVisibility="Hidden" 
+                ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                LoadCompleted="wb_LoadCompleted" />
 
-            <TextBox Name="LinkTextBox" Margin="10,5,138,1" Grid.Row="0" Grid.Column="0" IsEnabled="False" />
 
-            <Button Content="Create" Height="29" HorizontalAlignment="Left" Margin="77,5,0,0"
+            <Button Content="Create" Height="29" HorizontalAlignment="Left" Margin="88,5,0,0"
                 Name="ButtonCreate" VerticalAlignment="Top" Width="88" Click="button_Click_SendObject" Grid.Row="0" Grid.Column="2"/>
 
             <Button Content="Preview" Height="29" HorizontalAlignment="Left" Margin="190,5,0,0"

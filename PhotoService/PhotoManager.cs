@@ -30,19 +30,6 @@ namespace PhotoService
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall)]
     public class PhotoManager
     {
-        [WebGet(UriTemplate = "GetPhotos")]
-        public PhotoItem[] GetPhotos()
-        {
-            using (DataAcess data = new DataAcess())
-            {
-                var photos = data.GetPhotos();
-                List<PhotoItem> ret = new List<PhotoItem>();
-                foreach (var photo in photos)
-                    ret.Add(new PhotoItem() { PhotoID = photo.PhotoID, Name = photo.Name, Description = photo.Description, UploadedOn = photo.DateTime });
-
-                return ret.ToArray();
-            }
-        }
 
         [WebInvoke(UriTemplate = "UploadPhoto/{fileName}", Method = "POST")]
         public void UploadPhoto(string fileName, Stream fileContents)
@@ -73,64 +60,36 @@ namespace PhotoService
             Console.WriteLine("Uploaded file {0} with {1} bytes", fileName, totalBytesRead);
         }
 
-        [WebGet(UriTemplate = "GetLastPhoto", BodyStyle = WebMessageBodyStyle.Bare)]
-        public Stream GetLastPhoto()
+
+        [WebInvoke(UriTemplate = "CreateFiles/{name}/{code}/{plusText}/{amountCheckBox}/{fontFamily}/{textSize}/{fontStyle}/{sFontColor}/{width}/{marginRight}/{fontColor}/{height}/{marginLeft}/{jpSelected}", Method = "GET")]
+        public void CreateFiles(string name, string code, string plusText, string amountCheckBox, string fontFamily, string textSize, string fontStyle, string sFontColor,
+            string width, string marginRight, string fontColor, string height, string marginLeft, string jpSelected)
         {
-            using (DataAcess data = new DataAcess())
-            {
-                // Retrieve the last taken photo.
-                var photo = data.GetLastPhoto();
-                if (photo != null)
-                {
-                    MemoryStream ms = new MemoryStream(photo.Data);
-                    return ms;
-                }
-                else
-                {
-                    return null;
-                }
-            }
-        }
+            string csTemplate = File.ReadAllText(@"C:\Users\Public\TestFolder\CSTemplate.txt");
+            string aspxTemplate = File.ReadAllText(@"C:\Users\Public\TestFolder\ASPXTemplate.txt");
 
-        [WebGet(UriTemplate = "GetPhoto/{id}", BodyStyle = WebMessageBodyStyle.Bare)]
-        public Stream GePhoto(string id)
-        {
-            using (DataAcess data = new DataAcess())
-            {
-                // Retrieve the last taken photo.
-                var photo = data.GetPhoto(int.Parse(id));
-                if (photo != null)
-                {
-                    MemoryStream ms = new MemoryStream(photo.Data);
-                    return ms;
-                }
-                else
-                {
-                    return null;
-                }
-            }
-        }
+            var details = new Dictionary<string, string>();
+            details["name"] = name;
+            details["code"] = code;
+            details["plusText"] = plusText;
+            details["amount"] = amountCheckBox;
+            details["fontFamily"] = fontFamily;
+            details["textSize"] = textSize;
+            details["fontStyle"] = fontStyle;
+            details["sFontColor"] = sFontColor;
+            details["width"] = width;
+            details["marginRight"] = marginRight;
+            details["fontColor"] = fontColor;
+            details["height"] = height;
+            details["marginLeft"] = marginLeft;
 
-        [WebInvoke(UriTemplate = "DeletePhoto/{id}", Method="DELETE")]
-        public void DeletePhoto(string id)
-        {
-            using (DataAcess data = new DataAcess())
-            {
-                data.DeletePhoto(int.Parse(id));
-            }
-        }
+            csTemplate = details.Aggregate(csTemplate, (current, detail) => current.Replace("@" + detail.Key, detail.Value));
+            aspxTemplate = details.Aggregate(aspxTemplate, (current, detail) => current.Replace("@" + detail.Key, detail.Value));
 
+            File.WriteAllText(@"C:\Users\Public\TestFolder\" + name + ".cs", csTemplate);
+            File.WriteAllText(@"C:\Users\Public\TestFolder\" + name + ".aspx", aspxTemplate);
 
-
-        [WebInvoke(UriTemplate = "CreateFiles/{details}", Method = "GET")]
-        public void CreateFiles(string details)
-        {
-            string text = "A class is the most powerful data type in C#. Like a structure, " +
-                           "a class defines the data and behavior of the data type. " + details;
-
-            File.WriteAllText(@"C:\Users\Public\TestFolder\WriteText.txt", text);
-
-            Console.WriteLine("Create file {0}", details);
+            Console.WriteLine("Create file {0}", name);
 
         }
     }
