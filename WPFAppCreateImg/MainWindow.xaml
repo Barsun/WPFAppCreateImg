@@ -56,11 +56,14 @@
                         Grid.Row="1" Grid.Column="2" 
                         SelectedValuePath="Tag" Height="25">
                     </ComboBox>
-                    <Label Grid.Row="1" Grid.Column="3" Content="Just amount:" Margin="5,4,0,0"/>
-                    <CheckBox Grid.Row="1" Grid.Column="4" Name="AmountCheckBox" Margin="5,13,0,0"></CheckBox>
+                    <Label Grid.Row="1" Grid.Column="3" Content="Just amount:" Margin="0,4,0,0"/>
+                    <CheckBox Grid.Row="1" Grid.Column="4" Name="AmountCheckBox" Margin="10,13,0,0"></CheckBox>
 
-                    <Label Grid.Row="2" Grid.Column="1" Content="Your text: " Margin="0,3,0,0"/>
+                    <Label Grid.Row="2" Grid.Column="1" Content="Text before: " Margin="0,3,0,0"/>
                     <TextBox Name="PlusTextBox" Margin="10,5" Grid.Row="2" Grid.Column="2"/>
+
+                    <Label Grid.Row="2" Grid.Column="3" Content="Text after: " Margin="0,3,0,0"/>
+                    <TextBox Name="PlusTextBoxAfter" Margin="10,5,145,5" Grid.Row="2" Grid.Column="4"/>
 
                 </Grid>
             </TabItem>
@@ -74,8 +77,10 @@
                         <RowDefinition Height="35"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="149*" />
-                        <ColumnDefinition Width="711*" />
+                        <ColumnDefinition Width="126*" />
+                        <ColumnDefinition Width="275*" />
+                        <ColumnDefinition Width="171*" />
+                        <ColumnDefinition Width="288*" />
                     </Grid.ColumnDefinitions>
                     <TextBlock HorizontalAlignment="Left"
 			    Margin="10,10,0,0"
@@ -84,7 +89,13 @@
 			    Width="0" Height="16"/>
 
                     <Label Grid.Row="0" Grid.Column="0" Content="Name:" Margin="5"/>
-                    <TextBox Name="NameDrawDateTextBox" Margin="10,5,453,5" Grid.Row="0" Grid.Column="1"/>
+                    <TextBox Name="NameDrawDateTextBox" Margin="10,5,17,5" Grid.Row="0" Grid.Column="1"/>
+
+                    <Label Grid.Row="0" Grid.Column="2" Content="Add Text Before:" Margin="5"/>
+                    <TextBox Name="AddTextBefore" Margin="10,5,17,5" Grid.Row="0" Grid.Column="3"/>
+
+                    <Label Grid.Row="1" Grid.Column="2" Content="Add Text After:" Margin="5"/>
+                    <TextBox Name="AddTextAfter" Margin="10,5,17,5" Grid.Row="1" Grid.Column="3"/>
 
                     <Label Grid.Row="1" Grid.Column="0" Content="JackPot Game Date: " Margin="5,0,0,0"/>
                     <ComboBox
@@ -186,10 +197,10 @@
             <TextBox Name="HeightTextBox" Margin="10,5,305,6" Grid.Row="3" Grid.Column="3" PreviewTextInput="NumberValidationTextBox" Text="168"/>
 
             <Label Grid.Row="4" Grid.Column="0" Content="Margin Top:" Margin="5,5,5,0"/>
-            <TextBox Name="MarginRightTextBox" Margin="10,5,138,6" Grid.Row="4" Grid.Column="1" PreviewTextInput="NumberValidationTextBox"/>
+            <TextBox Name="MarginRightTextBox" Margin="10,5,138,6" Grid.Row="4" Grid.Column="1" PreviewTextInput="NumberValidationTextBox" Text="10"/>
 
             <Label Grid.Row="4" Grid.Column="2" Content="Margin Left:" Margin="5,5,5,0"/>
-            <TextBox Name="MarginLeftTextBox" Margin="10,5,305,6" Grid.Row="4" Grid.Column="3" PreviewTextInput="NumberValidationTextBox"/>
+            <TextBox Name="MarginLeftTextBox" Margin="10,5,305,6" Grid.Row="4" Grid.Column="3" PreviewTextInput="NumberValidationTextBox" Text="10"/>
 
         </Grid>
 
@@ -209,7 +220,7 @@
                 Name="ButtonCreate" VerticalAlignment="Top" Width="88" Click="button_Click_SendObject" Grid.Row="0" Grid.Column="2"/>
 
             <Button Content="Preview" Height="29" HorizontalAlignment="Left" Margin="190,5,0,0"
-                Name="ButtonPreview" VerticalAlignment="Top" Width="88" Click="button_Click_Preview" Grid.Row="0" Grid.Column="2"/>
+                Name="ButtonPreview" VerticalAlignment="Top" Width="88" Click="button_Click_SendObject" Grid.Row="0" Grid.Column="2"/>
 
         </Grid>
 

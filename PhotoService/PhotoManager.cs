@@ -14,6 +14,7 @@
 */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -22,6 +23,8 @@ using System.ServiceModel.Activation;
 using System.ServiceModel.Web;
 using System.Text;
 using System.IO;
+using System.Runtime.Serialization;
+using System.Web.Script.Serialization;
 
 namespace PhotoService
 {
@@ -47,56 +50,87 @@ namespace PhotoService
 
             Image returnImage = Image.FromStream(ms);
 
-            returnImage.Save(@"C:\Users\Public\TestFolder\" + fileName + ".jpg");
-
-            // Save the photo on database.
-            //using (DataAcess data = new DataAcess())
-            //{
-            //    var photo = new Photo() { Name = fileName, Description = fileName, Data = ms.ToArray(), DateTime = DateTime.UtcNow };
-            //    data.InsertPhoto(photo);
-            //}
+            returnImage.Save(@"C:\www\dynamic.bflimg.com\images\" + fileName + ".jpg");
 
             ms.Close();
             Console.WriteLine("Uploaded file {0} with {1} bytes", fileName, totalBytesRead);
         }
 
 
-        [WebInvoke(UriTemplate = "CreateFiles/{name}/{code}/{plusText}/{amountCheckBox}/{fontFamily}/{textSize}/{fontStyle}/{sFontColor}/{width}/{marginRight}/{fontColor}/{height}/{marginLeft}/{jpSelected}", Method = "GET")]
-        public void CreateFiles(string name, string code, string plusText, string amountCheckBox, string fontFamily, string textSize, string fontStyle, string sFontColor,
-            string width, string marginRight, string fontColor, string height, string marginLeft, string jpSelected)
-        {
-            string csTemplate = File.ReadAllText(@"C:\Users\Denis\TestFolder\CSTemplate.txt");
-            string aspxTemplate = File.ReadAllText(@"C:\Users\Denis\TestFolder\ASPXTemplate.txt");
 
-            var details = new Dictionary<string, string>();
-            details["name"] = name;
-            details["code"] = code;
-            details["plusText"] = plusText;
-            details["amount"] = amountCheckBox;
-            details["fontFamily"] = fontFamily;
-            details["textSize"] = textSize;
-            details["fontStyle"] = fontStyle;
-            details["sFontColor"] = sFontColor;
-            details["width"] = width;
-            details["marginRight"] = marginRight;
-            details["fontColor"] = fontColor;
-            details["height"] = height;
-            details["marginLeft"] = marginLeft;
+        [WebInvoke(UriTemplate = "SendParametersToServer", Method = "POST")]
+        public void SendParametersToServer(Stream fileContents)
+        {
+            byte[] buffer = new byte[32768];
+            MemoryStream ms = new MemoryStream();
+            int bytesRead, totalBytesRead = 0;
+            do
+            {
+                bytesRead = fileContents.Read(buffer, 0, buffer.Length);
+                totalBytesRead += bytesRead;
+
+                ms.Write(buffer, 0, bytesRead);
+            } while (bytesRead > 0);
+
+            string text = Encoding.UTF8.GetString(buffer, 0, buffer.Length).Replace("\0","");
+            JavaScriptSerializer j = new JavaScriptSerializer();
+            object a = j.Deserialize(text, typeof(object));
+            Dictionary<string, string> details = ConvertToDictionary(a);
+
+            string csTemplate = File.ReadAllText(@"C:\www\dynamic.bflimg.com\CreateDynFiles\templates\CSTemplate.txt");
+            string aspxTemplate = File.ReadAllText(@"C:\www\dynamic.bflimg.com\CreateDynFiles\templates\ASPXTemplate.txt");
+
+            if (details["jpSelected"] == "True")
+            {
+                details["jackpot"] = details["amount"] != "True" ? "jackpot" : "amount";
+                details["valueAmt"] = "string drawDate = \"" + details["plusText"] + "\" + GetDrawDate(\"" + details["code"] + "\").ToUpper() + \"" + details["plusTextAfter"] + "\"";
+            } else {
+                details["jackpot"] = "drawdate";
+
+                if (details["languageComboBox"] == "English")
+                {
+                    details["valueAmt"] = "string drawDate = \"" + details["addTextBefore"] + "\" + GetDrawDate(\"" + details["code"] + "\").ToUpper() + \"" + details["addTextAfter"] + "\"";
+                }else{
+                    details["valueAmt"] = "DateTime nextDrawPL = Convert.ToDateTime(GetDrawDate(\"" + details["code"] + "\")); " +
+                        "string drawDate = \"" + details["addTextBefore"] + "\" + nextDrawPL.ToString(\"D\", new System.Globalization.CultureInfo(\"" + details["languageComboBox"].Substring(0, 2).ToLower() + "-" + details["languageComboBox"].Substring(0, 2).ToUpper() + "\")).ToUpper() + \"" + details["addTextAfter"] + "\"";
+                }
+            }
+
 
             csTemplate = details.Aggregate(csTemplate, (current, detail) => current.Replace("@" + detail.Key, detail.Value));
             aspxTemplate = details.Aggregate(aspxTemplate, (current, detail) => current.Replace("@" + detail.Key, detail.Value));
 
-            File.WriteAllText(@"C:\Users\Public\TestFolder\" + name + ".cs", csTemplate);
-            File.WriteAllText(@"C:\Users\Public\TestFolder\" + name + ".aspx", aspxTemplate);
+            File.WriteAllText(@"C:\www\dynamic.bflimg.com\DImg\" + details["name"] + ".aspx.cs", csTemplate);
+            File.WriteAllText(@"C:\www\dynamic.bflimg.com\DImg\" + details["name"] + ".aspx", aspxTemplate);
 
-            Console.WriteLine("Create file {0}", name);
+            Console.WriteLine("Create file {0}", details["name"]);
 
+            ms.Close();
+            Console.WriteLine("Uploaded file {0} with bytes",  totalBytesRead);
         }
+        
 
         [WebInvoke(UriTemplate = "GameValuesToPopulate", Method = "GET")]
         public string GameValuesToPopulate()
         {
-            return File.ReadAllText(@"C:\Users\Denis\TestFolder\GameDataPopulate.xml");
+            return File.ReadAllText(@"C:\www\dynamic.bflimg.com\CreateDynFiles\templates\GameDataPopulate.xml");
+        }
+
+        public static Dictionary<string,string> ConvertToDictionary(object obj)
+        {
+            Dictionary<string, string> newDict = new Dictionary<string, string>();
+
+            if (typeof(IDictionary).IsAssignableFrom(obj.GetType()))
+            {
+                IDictionary idict = (IDictionary)obj;
+
+                foreach (object key in idict.Keys)
+                {
+                   newDict.Add(key.ToString(), idict[key].ToString());
+                }
+            }
+            
+            return newDict;
         }
     }
 }
