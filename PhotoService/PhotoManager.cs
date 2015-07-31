@@ -65,8 +65,8 @@ namespace PhotoService
         public void CreateFiles(string name, string code, string plusText, string amountCheckBox, string fontFamily, string textSize, string fontStyle, string sFontColor,
             string width, string marginRight, string fontColor, string height, string marginLeft, string jpSelected)
         {
-            string csTemplate = File.ReadAllText(@"C:\Users\Public\TestFolder\CSTemplate.txt");
-            string aspxTemplate = File.ReadAllText(@"C:\Users\Public\TestFolder\ASPXTemplate.txt");
+            string csTemplate = File.ReadAllText(@"C:\Users\Denis\TestFolder\CSTemplate.txt");
+            string aspxTemplate = File.ReadAllText(@"C:\Users\Denis\TestFolder\ASPXTemplate.txt");
 
             var details = new Dictionary<string, string>();
             details["name"] = name;
@@ -91,6 +91,12 @@ namespace PhotoService
 
             Console.WriteLine("Create file {0}", name);
 
+        }
+
+        [WebInvoke(UriTemplate = "GameValuesToPopulate", Method = "GET")]
+        public string GameValuesToPopulate()
+        {
+            return File.ReadAllText(@"C:\Users\Denis\TestFolder\GameDataPopulate.xml");
         }
     }
 }

@@ -21,8 +21,6 @@ namespace WPFAppCreateImg
         public MainWindow(){
             InitializeComponent();
             DataContext = _filesStructureDataObject;
-
-            webBrowser.Navigate("http://dynamic.bflimg.com/Dimg/eurodd12.aspx");
         }
 
        
@@ -51,14 +49,22 @@ namespace WPFAppCreateImg
             e.Handled = regex.IsMatch(e.Text);
         }
 
-        private void button_Click_SendObject(object sender, RoutedEventArgs e){
+        private void button_Click_SendObject(object sender, RoutedEventArgs e)
+        {
+            if (Validate()) return;
+            SendParametersToServerDynImg();
+            UploadImageOnServer();
+        }
 
+        private bool Validate()
+        {
             if (!File.Exists(FileNameTextBox.Text))
             {
-                string message = string.Format("Unable to find '{0}'. Please check the file name and try again.", FileNameTextBox.Text);
+                string message = string.Format("Unable to find '{0}'. Please check the file name and try again.",
+                    FileNameTextBox.Text);
                 MessageBox.Show(message, "Upload", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 FileNameTextBox.Focus();
-                return;
+                return true;
             }
 
             if (JackPot.IsSelected)
@@ -67,31 +73,29 @@ namespace WPFAppCreateImg
                 {
                     MessageBox.Show("Specifiy a name for file.", "Create", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                     NameTextBox.Focus();
-                } else {
-                    SendParametersToServerDynImg();
-                    UploadImageOnServer();
+                    return true;
                 }
-            } else if (DrowDate.IsSelected)
+                return false;
+              }
+            else if (DrowDate.IsSelected)
             {
                 if (string.IsNullOrWhiteSpace(NameDrawDateTextBox.Text) && DrowDate.IsSelected)
                 {
                     MessageBox.Show("Specify the description of the file to upload.", "Drow Date", MessageBoxButton.OK,
                         MessageBoxImage.Exclamation);
                     NameDrawDateTextBox.Focus();
-                } else {
-                    SendParametersToServerDynImg();
-                    UploadImageOnServer();
+                    return true;
                 }
-            }
-            
+                return false;
+             }
+            return false;
         }
 
         private void UploadImageOnServer(){
 
             string url = ConfigurationManager.AppSettings["serviceUrl"];
             try{
-                string requestUrl = string.Format("{0}/UploadPhoto/{1}", url,
-                    System.IO.Path.GetFileName(FileNameTextBox.Text));
+                string requestUrl = string.Format("{0}/UploadPhoto/{1}", url, Path.GetFileName(FileNameTextBox.Text));
                 HttpWebRequest request = (HttpWebRequest) HttpWebRequest.Create(requestUrl);
 
                 request.Method = "POST";
@@ -150,5 +154,11 @@ namespace WPFAppCreateImg
                 WebBrowser wb = (WebBrowser)sender;
                 wb.InvokeScript("execScript", new Object[] { script, "JavaScript" });
             }
+
+        private void button_Click_Preview(object sender, RoutedEventArgs e)
+        {
+            if (Validate()) return;
+            webBrowser.Navigate("http://dynamic.bflimg.com/Dimg/eurodd12.aspx");
+        }
     }
 }

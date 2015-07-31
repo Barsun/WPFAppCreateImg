@@ -209,7 +209,7 @@
                 Name="ButtonCreate" VerticalAlignment="Top" Width="88" Click="button_Click_SendObject" Grid.Row="0" Grid.Column="2"/>
 
             <Button Content="Preview" Height="29" HorizontalAlignment="Left" Margin="190,5,0,0"
-                Name="ButtonPreview" VerticalAlignment="Top" Width="88" Click="button_Click_BrowseImages" Grid.Row="0" Grid.Column="2"/>
+                Name="ButtonPreview" VerticalAlignment="Top" Width="88" Click="button_Click_Preview" Grid.Row="0" Grid.Column="2"/>
 
         </Grid>
 

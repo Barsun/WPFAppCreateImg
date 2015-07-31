@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media;
+using System.Xml.Serialization;
 
 namespace WPFAppCreateImg
 {
@@ -81,9 +86,37 @@ namespace WPFAppCreateImg
         public DataObject()
         {
             ListOfItems = new List<string>();
-            string xml = File.ReadAllText(@"GameDataPopulate.xml");
-            ListOfItems = xml.ParseXML<GameDataPopulate.next_lottery_data>().DrawField.Select(x => x.name);
-            ListOfItemsData = xml.ParseXML<GameDataPopulate.next_lottery_data>().DrawField.Select(x => x);
+
+
+            try
+            {
+
+                string url = ConfigurationManager.AppSettings["serviceUrl"];
+                string requestUrl = string.Format("{0}/GameValuesToPopulate", url);
+
+                WebRequest request = WebRequest.Create(requestUrl);
+                // Get response  
+                using (HttpWebResponse resp = request.GetResponse()
+                              as HttpWebResponse)
+                {
+                    StreamReader reader = new StreamReader(resp.GetResponseStream());
+                    string responce = reader.ReadToEnd();
+                    string xml = responce.Substring(1).Substring(0, responce.Length - 2).Replace("\\", "") + "";
+                    ListOfItems = xml.ParseXML<GameDataPopulate.next_lottery_data>().DrawField.Select(x => x.name);
+                    ListOfItemsData = xml.ParseXML<GameDataPopulate.next_lottery_data>().DrawField.Select(x => x);
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error access file on server to populate data, contact the administrator:  " + ex.Message, "Server", MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+                Application.Current.Shutdown();
+            }
+
+            
+            
+            
         }
 
         public IEnumerable<string> ListOfItems { get; set; }
