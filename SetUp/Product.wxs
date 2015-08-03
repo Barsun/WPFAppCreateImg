@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Increment the Version value in your Product element to be higher than any previous versions that you have shipped.
+  Windows Installer only uses the first 3 parts of the version in upgrade scenarios,
+  so make sure to increment your version such that one of the first 3 parts is higher than any previously shipped version.
+  For example, if your version 1 uses Version value 1.0.1.0, then version 2 should have a Version value of 1.0.2.0 or higher (1.0.1.1 will not work here).
+  Generate a new Id value in the Product element of the new version of the .msi.-->
+
+<?define PRODUCTVERSION="1.0.0"?>
+<?define PRODUCTMANUFACTURER="ANNEXIO"?>
+
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="*" Name="WPFAppCreateImg" Language="1033" Version="$(var.PRODUCTVERSION)" Manufacturer="$(var.PRODUCTMANUFACTURER)"
+           UpgradeCode="39e18d69-f6ee-4988-a005-5cc9c80ec0de">
+    <Package InstallerVersion="200" Compressed="yes" Manufacturer="$(var.PRODUCTMANUFACTURER)" Description="WPFAppCreateImg $(var.PRODUCTVERSION)"/>
+
+    <MajorUpgrade
+       
+      Schedule="afterInstallInitialize"
+      DowngradeErrorMessage="A later version of [ProductName] is already installed. Setup will now exit."/>
+
+
+
+    <Media Id="1" Cabinet="WixProject.cab" EmbedCab="yes" />
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder" Name="PFiles">
+        <Directory Id="KTNRoot" Name="KTN">
+          <Directory Id="WPFAPPCREATEIMGROOTDIRECTORY" Name="WPFAppCreateImg">
+            <Directory Id="WPFAppCreateImgGeolocationDirectory" Name="Geolocation" />
+          </Directory>
+        </Directory>
+      </Directory>
+     
+      <Directory Id="DesktopFolder" Name="Desktop" />
+
+    </Directory>
+
+
+
+
+  </Product>
+</Wix>

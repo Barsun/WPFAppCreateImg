@@ -5,10 +5,10 @@
     xmlns:wpfAppCreateImg="clr-namespace:WPFAppCreateImg"
     xmlns:customcontrols="clr-namespace:WPFAppCreateImg"
     mc:Ignorable="d" x:Class="WPFAppCreateImg.MainWindow"
-    xmlns:local="clr-namespace:WPFAppCreateImg"
+    xmlns:control="clr-namespace:WPFAppCreateImg.Control"
     Icon="icon.png"
-        Title="Create Dynamic Images" Height="564" Width="900" ResizeMode="NoResize">
-    <Grid Height="444" VerticalAlignment="Top">
+        Title="Create Dynamic Images" Height="580" Width="900" ResizeMode="CanMinimize">
+    <Grid Height="535" VerticalAlignment="Top">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -173,7 +173,7 @@
 
             <Label Grid.Row="2" Grid.Column="0" Content="Shadow Color Font:" Margin="5"/>
 
-            <local:Colorpicker  x:Name="shadowFontColor" Grid.Row="2" Grid.Column="1" Margin="10,5,47,5"></local:Colorpicker>
+            <control:Colorpicker  x:Name="shadowFontColor" Grid.Row="2" Grid.Column="1" Margin="10,5,47,5"></control:Colorpicker>
 
             <Label Grid.Row="0" Grid.Column="2" Content="Font Size:" Margin="5"/>
 
@@ -181,14 +181,15 @@
 
             <Label Grid.Row="1" Grid.Column="2" Content="Font Color:" Margin="5"/>
 
-            <local:Colorpicker  x:Name="fontColorTextBox" Grid.Row="1" Grid.Column="3" Margin="10,5,192,5"></local:Colorpicker>
+            <control:Colorpicker  x:Name="fontColorTextBox" Grid.Row="1" Grid.Column="3" Margin="10,5,192,5"></control:Colorpicker>
 
             <Label Grid.Row="2" Grid.Column="2" Content="Image:" Margin="5"/>
             <TextBox Name="FileNameTextBox" Margin="10,5,112,6" Grid.Row="2" Grid.Column="3" MouseDoubleClick="button_Click_BrowseImages" />
 
             <Button Content="Browse" Height="25" HorizontalAlignment="Left" Margin="290,4,0,0"
                 Name="ButtonImageBrowse" VerticalAlignment="Top" Width="88" Click="button_Click_BrowseImages" Grid.Row="2" Grid.Column="3"/>
-
+            <Grid Grid.Row="2" Grid.Column="3">
+            </Grid>
 
             <Label Grid.Row="3" Grid.Column="0" Content="Width:" Margin="5,5,5,0"/>
             <TextBox Name="WidthTextBox" Margin="10,5,138,6" Grid.Row="3" Grid.Column="1" PreviewTextInput="NumberValidationTextBox" Text="600"/>
@@ -196,31 +197,34 @@
             <Label Grid.Row="3" Grid.Column="2" Content="Height:" Margin="5,5,5,0"/>
             <TextBox Name="HeightTextBox" Margin="10,5,305,6" Grid.Row="3" Grid.Column="3" PreviewTextInput="NumberValidationTextBox" Text="168"/>
 
-            <Label Grid.Row="4" Grid.Column="0" Content="Margin Top:" Margin="5,5,5,0"/>
+            <Label Grid.Row="4" Grid.Column="0" Content="Margin Left:" Margin="5,5,5,0"/>
             <TextBox Name="MarginRightTextBox" Margin="10,5,138,6" Grid.Row="4" Grid.Column="1" PreviewTextInput="NumberValidationTextBox" Text="10"/>
 
-            <Label Grid.Row="4" Grid.Column="2" Content="Margin Left:" Margin="5,5,5,0"/>
+            <Label Grid.Row="4" Grid.Column="2" Content="Margin Top:" Margin="5,5,5,0"/>
             <TextBox Name="MarginLeftTextBox" Margin="10,5,305,6" Grid.Row="4" Grid.Column="3" PreviewTextInput="NumberValidationTextBox" Text="10"/>
 
         </Grid>
 
         <Grid Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="235*"/>
+                <RowDefinition Height="140"/>
+            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="2*" />
-                <ColumnDefinition Width="0*" />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <WebBrowser Name="webBrowser" Margin="10,-12,225,-126" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" ScrollViewer.CanContentScroll="False"
-                ScrollViewer.HorizontalScrollBarVisibility="Hidden" 
-                ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                LoadCompleted="wb_LoadCompleted" />
+            <WebBrowser Name="webBrowser" Margin="10,-12,225,-96" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
+            </WebBrowser>
 
 
-            <Button Content="Create" Height="29" HorizontalAlignment="Left" Margin="88,5,0,0"
-                Name="ButtonCreate" VerticalAlignment="Top" Width="88" Click="button_Click_SendObject" Grid.Row="0" Grid.Column="2"/>
+            <Button Content="Create/Preview" Height="29" HorizontalAlignment="Left" Margin="125,0,0,0"
+                Name="ButtonCreate" VerticalAlignment="Top" Width="108" Click="button_Click_SendObject" Grid.Row="0" Grid.Column="1"/>
+            <TextBox Name="AddressTextBox" Margin="10,101,225,15" Grid.Row="1" Grid.Column="0" PreviewTextInput="NumberValidationTextBox" Grid.ColumnSpan="2" IsReadOnly="True"/>
 
-            <Button Content="Preview" Height="29" HorizontalAlignment="Left" Margin="190,5,0,0"
-                Name="ButtonPreview" VerticalAlignment="Top" Width="88" Click="button_Click_SendObject" Grid.Row="0" Grid.Column="2"/>
+            <Grid Grid.Row="1" Grid.Column="1" x:Name="GridLoadingSpinner" Visibility="Hidden">
+                <control:LoadingAnimation HorizontalAlignment="Center" VerticalAlignment="Center" Margin="133,27,77,25" />
+            </Grid>
 
         </Grid>
 

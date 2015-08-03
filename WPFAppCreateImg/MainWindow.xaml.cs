@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Management;
 using System.Net;
 using System.Runtime.Serialization.Json;
 using System.Text;
@@ -33,17 +34,13 @@ namespace WPFAppCreateImg
         private void button_Click_BrowseImages(object sender, RoutedEventArgs e){
             Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
 
-            // Set filter for file extension and default file extension
             dlg.DefaultExt = ".jpg";
             dlg.Filter = "Images (.jpg)|*.jpg";
 
-            // Display OpenFileDialog by calling ShowDialog method
             Nullable<bool> result = dlg.ShowDialog();
 
-            // Get the selected file name and display in a TextBox
             if (result == true)
             {
-                // Open document
                 string filename = dlg.FileName;
                 FileNameTextBox.Text = filename;
             }
@@ -55,9 +52,12 @@ namespace WPFAppCreateImg
             e.Handled = regex.IsMatch(e.Text);
         }
 
+
         private void button_Click_SendObject(object sender, RoutedEventArgs e)
         {
+
             if (Validate()) return;
+            GridLoadingSpinner.Visibility = Visibility.Visible;
             SendParametersToServer();
             UploadImageOnServer();
 
@@ -67,7 +67,10 @@ namespace WPFAppCreateImg
             }else{
                 url = NameDrawDateTextBox.Text;
             }
-            webBrowser.Navigate("http://dynamic.bflimg.com/Dimg/" + url + ".aspx");
+            webBrowser.Navigate("http://xxxxxxx.xxxx.xxx/xxx/" + url + ".aspx");
+            AddressTextBox.Text = "http://xxxxxxx.xxxx.xxx/xxx/" + url + ".aspx";
+
+            GridLoadingSpinner.Visibility = Visibility.Collapsed;
         }
 
         private bool Validate()
@@ -193,7 +196,8 @@ namespace WPFAppCreateImg
 
             string url = ConfigurationManager.AppSettings["serviceUrl"];
             try{
-                string requestUrl = string.Format("{0}/UploadPhoto/{1}", url, NameTextBox.Text);
+                string imgName = JackPot.IsSelected ? NameTextBox.Text : NameDrawDateTextBox.Text;
+                string requestUrl = string.Format("{0}/UploadPhoto/{1}", url, imgName);
                 HttpWebRequest request = (HttpWebRequest) HttpWebRequest.Create(requestUrl);
 
                 request.Method = "POST";
@@ -213,8 +217,7 @@ namespace WPFAppCreateImg
 
                 MessageBox.Show("File sucessfully Created.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             } catch (Exception ex){
-                MessageBox.Show("Error during file upload: " + ex.Message, "Upload", MessageBoxButton.OK,
-                    MessageBoxImage.Error);
+                MessageBox.Show("Error during file upload: " + ex.Message, "Upload", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

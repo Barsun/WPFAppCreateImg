@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Fragment>
+
+
+
+    <Component Id="WPFAppCreateImgExecutableComponent" Guid="7728505B-E439-4F2F-ABE6-5E679D37158B" Directory="WPFAPPCREATEIMGROOTDIRECTORY">
+      <RegistryKey Root="HKCU" Key="Software\WPFAppCreateImg\Uninstall">
+        <RegistryValue Value = "{CBD39BB5-B9B9-47C8-8CC0-E30AED716976}" Type="string" KeyPath="yes"/>
+      </RegistryKey>
+
+
+      <!--Uninstall shortcut-->
+      <Shortcut Id="UninstallProduct"
+           Name="Uninstall Application"
+           Target="[System64Folder]msiexec.exe"
+           Arguments="/x [ProductCode]"
+           Directory="ProgramMenuWPFAppCreateImgDir"
+           Description="Uninstalls Application" />
+
+
+      <RemoveFolder Id="RemoveWPFAppCreateImgRootDirectory" On="uninstall" Directory="WPFAPPCREATEIMGROOTDIRECTORY"/>
+      <RemoveFolder Id="RemoveProgramMenuDir" On="uninstall" Directory="ProgramMenuKTNDir"/>
+      <RemoveFolder Id="RemoveProgramMenuWPFAppCreateImgDir" On="uninstall" Directory="ProgramMenuWPFAppCreateImgDir"/>
+      <RemoveFolder Id="RemoveDesktopFolder" On="uninstall" Directory="DesktopFolder"/>
+
+
+
+
+      
+    </Component>
+
+    
+	</Fragment>
+</Wix>
