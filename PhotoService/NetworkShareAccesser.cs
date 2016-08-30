@@ -62,7 +62,7 @@ namespace PhotoService
         public static NetworkShareAccesser Access(string remoteComputerName, string domainOrComuterName, string userName,
             string password){
             return new NetworkShareAccesser(remoteComputerName, domainOrComuterName + @"\" + userName, password);
-        } 
+        }
 
         /// <summary>
         ///     Creates a NetworkShareAccesser for the given computer name using the given username (format:
